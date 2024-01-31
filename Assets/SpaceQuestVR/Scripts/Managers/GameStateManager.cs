@@ -1,13 +1,15 @@
 using UnityEngine;
 using System;
+using System.Collections.Generic;
 
 public class GameStateManager : MonoBehaviour
 {
-    public enum GameState { Waiting, Playing, GameOver }
+    public enum GameState { Waiting, Playing, GameOverDefeat, GameOverVictory }
     public static GameState currentGameState;
     public static event Action<GameState> OnGameStateChanged;
-    [SerializeField] float roundTime;
-    private float sliderFill;
+    private static List<IGameManagerListener> listeners = new List<IGameManagerListener>();
+    public EnemyShip[] enemyShips;
+    public Weapon[] weapons;
 
     public static GameStateManager Instance { get; private set; }
 
@@ -22,33 +24,85 @@ public class GameStateManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
 
+    void Start()
+    {
+        InitializeGameComponents();
+        AudioManager.Instance.PlayAudioClip(0, true);
         currentGameState = GameState.Waiting;
     }
 
-    void Update()
+    private void InitializeGameComponents()
     {
-        if (currentGameState == GameState.Playing) SetTimer();
+        foreach (var enemyShip in enemyShips)
+        {
+            PoolManager.Instance.CreatePool(enemyShip.name, enemyShip.prefab, enemyShip.poolSize);
+        }
     }
 
-    void SetTimer()
+    public static void RegisterListener(IGameManagerListener listener)
     {
-        sliderFill = Math.Max(sliderFill - (Time.deltaTime / roundTime), 0f);
-        UIManager.Instance.SetSlider(sliderFill);
-        if(sliderFill == 0f){
-            SetGameOver();
+        if (!listeners.Contains(listener))
+        {
+            listeners.Add(listener);
         }
+    }
+
+    public static void UnregisterListener(IGameManagerListener listener)
+    {
+        listeners.Remove(listener);
     }
 
     public void ChangeGameState(GameState newState)
     {
         currentGameState = newState;
-        OnGameStateChanged?.Invoke(newState);
+        if (newState == GameState.Playing) StartNewGame();
+        NotifyGameStateChange();
     }
 
-    public void SetGameOver()
-{
-    ChangeGameState(GameState.GameOver);
-    // Additional game over logic, if needed
-}
+    private void NotifyGameStateChange()
+    {
+        OnGameStateChanged?.Invoke(currentGameState);
+
+        // Notifying listeners that implement IGameManagerListener
+        foreach (var listener in listeners)
+        {
+            switch (currentGameState)
+            {
+                case GameState.Playing:
+                    listener.OnGameStart();
+                    break;
+                case GameState.GameOverDefeat:
+                    listener.OnGameOverDefeat();
+                    break;
+                case GameState.GameOverVictory:
+                    listener.OnGameOverVictory();
+                    break;
+            }
+        }
+    }
+
+    public void StartNewGame()
+    {
+        Debug.Log("Start new Game");
+        ShieldManager.Instance.Initialize();
+        ScoreManager.Instance.SetScore(0);
+        LevelManager.Instance.StartNewGame();
+    }
+
+    public void SetGameOverDefeat()
+    {
+        ChangeGameState(GameState.GameOverDefeat);
+        LevelManager.Instance.SetLevel(-1);
+        PoolManager.Instance.ReturnAllActiveItemsToPool();
+        AudioManager.Instance.PlayAudioClip(1, false);
+    }
+
+    public void SetGameOverVictory()
+    {
+        ChangeGameState(GameState.GameOverVictory);
+        PoolManager.Instance.ReturnAllActiveItemsToPool();
+        AudioManager.Instance.PlayAudioClip(3, false);
+    }
 }

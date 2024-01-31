@@ -1,10 +1,16 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UIManager : MonoBehaviour
+public class UIManager : MonoBehaviour, IGameManagerListener
 {
-    [SerializeField] private GameObject gameOverScreen;
-    [SerializeField] Image timerElement;
+    [SerializeField] private GameObject startMenuCanvas;
+    [SerializeField] private GameObject gameOverDefeatCanvas;
+    [SerializeField] private GameObject gameOverVictoryCanvas;
+    [SerializeField] Image shieldElement;
+    [SerializeField] Image enemiesElement;
+    [SerializeField] TextMeshProUGUI shieldText;
+    [SerializeField] TextMeshProUGUI stageText;
 
     public static UIManager Instance { get; private set; }
 
@@ -13,42 +19,76 @@ public class UIManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            GameStateManager.RegisterListener(this);
             DontDestroyOnLoad(gameObject);
         }
         else
         {
             Destroy(gameObject);
         }
-
     }
 
-    void OnEnable()
+    void OnDestroy()
     {
-        GameStateManager.OnGameStateChanged += HandleGameStateChanged;
+        GameStateManager.UnregisterListener(this);
     }
 
-    void OnDisable()
+    public void OnGameStart()
     {
-        GameStateManager.OnGameStateChanged -= HandleGameStateChanged;
+        UpdateUI(GameStateManager.GameState.Playing);
     }
 
-    private void HandleGameStateChanged(GameStateManager.GameState state)
+    public void OnGameOverDefeat()
     {
-        if (state == GameStateManager.GameState.GameOver)
+        UpdateUI(GameStateManager.GameState.GameOverDefeat);
+    }
+
+    public void OnGameOverVictory()
+    {
+        UpdateUI(GameStateManager.GameState.GameOverVictory);
+    }
+
+    public void UpdateUI(GameStateManager.GameState gameState)
+    {
+        switch (gameState)
         {
-            ShowGameOverScreen();
+            case GameStateManager.GameState.Waiting:
+                startMenuCanvas.SetActive(true);
+                gameOverDefeatCanvas.SetActive(false);
+                gameOverVictoryCanvas.SetActive(false);
+                break;
+            case GameStateManager.GameState.Playing:
+                startMenuCanvas.SetActive(false);
+                gameOverDefeatCanvas.SetActive(false);
+                gameOverVictoryCanvas.SetActive(false);
+                break;
+            case GameStateManager.GameState.GameOverDefeat:
+                startMenuCanvas.SetActive(false);
+                gameOverDefeatCanvas.SetActive(true);
+                gameOverVictoryCanvas.SetActive(false);
+                break;
+            case GameStateManager.GameState.GameOverVictory:
+                startMenuCanvas.SetActive(false);
+                gameOverDefeatCanvas.SetActive(false);
+                gameOverVictoryCanvas.SetActive(true);
+                break;
         }
-        // Handle other states as needed
     }
 
-    private void ShowGameOverScreen()
+    public void SetShieldLife(float value)
     {
-        gameOverScreen.SetActive(true);
-        // Additional logic for the game over screen
+        shieldText.text = (value * 100).ToString();
+        shieldElement.fillAmount = value;
     }
 
-    public void SetSlider(float value){
-        timerElement.fillAmount = value;
+    public void SetStageTitle(string value)
+    {
+        stageText.text = value;
+    }
+
+    public void SetEnemyElement(float value)
+    {
+        enemiesElement.fillAmount = value;
     }
 
 }

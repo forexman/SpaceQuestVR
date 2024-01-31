@@ -1,5 +1,6 @@
 public interface IGameManagerListener
 {
     void OnGameStart();
-    void OnGameOver();
+    void OnGameOverDefeat();
+    void OnGameOverVictory();
 }

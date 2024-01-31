@@ -7,15 +7,18 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class Weapon : MonoBehaviour
 {
-    [SerializeField] private Animator animator;
     [SerializeField] private AudioClip fireSound;
     [SerializeField] private Transform projectileOrigin;
-    [SerializeField] private GameObject projectilePrefab;
-    [SerializeField] private float projectileSpeed;
-
+    [SerializeField] private WeaponData weaponData;
+    private float timeBetweenShots;
+    private bool triggerPressed = false;
+    private bool isGrabbed = false;
+    private float nextFireTime = 0f;
     private AudioSource audioSource;
     private Pose originPose;
     private XRGrabInteractable grabInteractable;
+    private XRBaseController baseController;
+
 
     void Awake()
     {
@@ -24,43 +27,82 @@ public class Weapon : MonoBehaviour
         SetOrigin();
     }
 
+    void OnEnable()
+    {
+        grabInteractable.selectEntered.AddListener(WeaponGrabbed);
+        grabInteractable.selectExited.AddListener(WeaponReleased);
+        grabInteractable.activated.AddListener(SetActiveController);
+    }
+
+    void OnDisable()
+    {
+        grabInteractable.selectEntered.RemoveListener(WeaponGrabbed);
+        grabInteractable.selectExited.RemoveListener(WeaponReleased);
+        grabInteractable.activated.RemoveListener(SetActiveController);
+    }
+
+    void Start()
+    {
+        PoolManager.Instance.CreatePool(weaponData.projectilePrefab.name, weaponData.projectilePrefab, weaponData.projectilePoolSize);
+        timeBetweenShots = 60f / weaponData.roundsPerMinute;
+    }
+
+    void Update()
+    {
+        if (weaponData.isAutomatic && triggerPressed && isGrabbed)
+        {
+            AutomaticFire();
+        }
+    }
+
     private void InitializeAudioSource()
     {
         audioSource = GetComponent<AudioSource>();
         if (!audioSource) audioSource = gameObject.AddComponent(typeof(AudioSource)) as AudioSource;
     }
 
-    void OnEnable() => grabInteractable.selectExited.AddListener(WeaponReleased);
-    void OnDisable() => grabInteractable.selectExited.RemoveListener(WeaponReleased);
+    public void TriggerPressed()
+    {
+        SendRaycast();
+        triggerPressed = true;
+        if (!weaponData.isAutomatic)
+            Fire();
+    }
+
+    public void TriggerReleased()
+    {
+        triggerPressed = false;
+    }
+
+    private void AutomaticFire()
+    {
+        if (Time.time >= nextFireTime)
+        {
+            Fire();
+            nextFireTime = Time.time + timeBetweenShots;
+        }
+    }
+
+    private void SendRaycast()
+    {
+        RaycastHit rayHit;
+        if (Physics.Raycast(projectileOrigin.position, projectileOrigin.forward, out rayHit, 300f))
+        {
+            if (rayHit.transform.GetComponent<IRaycast>() != null)
+                rayHit.transform.GetComponent<IRaycast>().HitByRaycast();
+        }
+    }
 
     public void Fire()
     {
         FireSFX();
-        //raycast to hit - to be changed with projectile based damage
-        RaycastHit rayHit;
-        if (Physics.Raycast(projectileOrigin.position, projectileOrigin.forward, out rayHit, 300f))
-        {
-            if (rayHit.transform.GetComponent<EnemyManager>() != null)
-            {
-                rayHit.transform.GetComponent<EnemyManager>().EnemyDestroyed();
-            }
-            else if (rayHit.transform.GetComponent<IRaycast>() != null)
-                rayHit.transform.GetComponent<IRaycast>().HitByRaycast();
-        }
-        GameObject projectile = Instantiate(projectilePrefab, projectileOrigin.position, projectileOrigin.rotation);
-        //LaunchProjectile();
-
-    }
-
-    void FireSFX()
-    {
-        audioSource.PlayOneShot(fireSound);
+        LaunchProjectile();
+        SendHapticFeedback();
     }
 
     private void LaunchProjectile()
     {
-        GameObject projectile = PoolManager.Instance.GetFromPool("Projectile");
-
+        GameObject projectile = PoolManager.Instance.GetFromPool(weaponData.projectilePrefab.name);
         if (projectile != null)
         {
             projectile.transform.position = projectileOrigin.position;
@@ -69,7 +111,8 @@ public class Weapon : MonoBehaviour
             IProjectile projectileComponent = projectile.GetComponent<IProjectile>();
             if (projectileComponent != null)
             {
-                projectileComponent.Launch(transform.forward, projectileSpeed);
+                projectileComponent.Launch(transform.forward, weaponData.projectileSpeed);
+                (projectileComponent as Projectile).SetDamage(weaponData.projectileDamage);
             }
         }
         else
@@ -78,8 +121,22 @@ public class Weapon : MonoBehaviour
         }
     }
 
+    void FireSFX()
+    {
+        audioSource.PlayOneShot(fireSound);
+    }
+
+
+
+    void WeaponGrabbed(SelectEnterEventArgs args)
+    {
+       isGrabbed = true;
+    }
+
     void WeaponReleased(SelectExitEventArgs args)
     {
+        isGrabbed = false;
+        triggerPressed = false;
         ReturnToOrigin();
     }
 
@@ -93,5 +150,15 @@ public class Weapon : MonoBehaviour
     {
         transform.position = originPose.position;
         transform.rotation = originPose.rotation;
+    }
+
+    private void SetActiveController(ActivateEventArgs arg)
+    {
+        baseController = arg.interactorObject.transform.GetComponent<XRBaseController>();
+    }
+
+    private void SendHapticFeedback()
+    {
+        if (baseController) baseController.SendHapticImpulse(.75f, .05f);
     }
 }

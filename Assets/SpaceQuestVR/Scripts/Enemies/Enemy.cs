@@ -2,20 +2,35 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour, IEnemyBehavior, IScoreable, IPoolable
 {
-    public float minSpeed = 0.1f;
-    public float maxSpeed = 10f;
+    private int unitHealth;
     private float unitSpeed;
-    private Vector3 direction;
+    private int unitBaseScore;
+    private int unitDamageToShield;
+    private Rigidbody rb;
+    [SerializeField] private Vector3 direction;
+    [SerializeField] private GameObject collisionPrefab;
+    [SerializeField] private GameObject destroyShipPrefab;
+    [SerializeField] private GameObject scorePopUpPrefab;
 
-    void Start()
+    void Awake()
     {
-        unitSpeed = Random.Range(minSpeed, maxSpeed);
-        // Set a random direction or other initialization
+        rb = GetComponent<Rigidbody>();
+    }
+
+    public void Initialize(EnemyShip data)
+    {
+        unitHealth = data.unitHealth;
+        unitBaseScore = data.baseScore;
+        unitDamageToShield = data.damageToShield;
+        unitSpeed = Random.Range(data.unitSpeedMin, data.unitSpeedMax);
     }
 
     void Update()
     {
-        Move();
+        if (gameObject.activeSelf)
+        {
+            rb.velocity = direction.normalized * unitSpeed;
+        }
     }
 
     public void Move()
@@ -23,7 +38,7 @@ public class Enemy : MonoBehaviour, IEnemyBehavior, IScoreable, IPoolable
         transform.Translate(direction * Time.deltaTime * unitSpeed, Space.World);
     }
 
-    public void Attack()
+    public void Attack(GameObject target)
     {
         // Implement attack behavior
     }
@@ -33,10 +48,30 @@ public class Enemy : MonoBehaviour, IEnemyBehavior, IScoreable, IPoolable
         // Implement interaction behavior
     }
 
-    public int CalculateScore()
+    public int GetDamageToShield()
     {
-        // Calculate score based on enemy type, distance, etc.
-        return (int)(unitSpeed * 10);
+        return unitDamageToShield;
+    }
+
+    public void TakeDamage(int amount, Vector3 collisionPoint)
+    {
+        unitHealth -= amount;
+        if (unitHealth <= 0)
+        {
+            EnemyDestroyed();
+        }
+        else
+        {
+            PlayDamageEffect(collisionPoint);
+        }
+    }
+
+    private void PlayDamageEffect(Vector3 collisionPoint)
+    {
+        if (collisionPrefab != null)
+        {
+            Instantiate(collisionPrefab, new Vector3 (collisionPoint.x, transform.position.y - 0.85f, collisionPoint.z), Quaternion.identity);
+        }
     }
 
     public void OnObjectSpawn()
@@ -47,8 +82,42 @@ public class Enemy : MonoBehaviour, IEnemyBehavior, IScoreable, IPoolable
     public void ReturnToPool()
     {
         // Cleanup before returning to the pool
-        PoolManager.Instance.ReturnToPool("Enemy", gameObject);
+        PoolManager.Instance.ReturnToPool(name, gameObject);
     }
+
+    public void EnemyDestroyed()
+    {
+        CalculateAndReportScore();
+        PlayDestroyEffect();
+        LevelManager.Instance.ShipDestroyed();
+        ReturnToPool();
+    }
+
+    private void CalculateAndReportScore()
+    {
+        int score = CalculateScore();
+        ScoreManager.Instance.AddScore(score);
+        ShowScorePopup(score);
+    }
+
+    public int CalculateScore()
+    {
+        float shotDistance = Vector3.Distance(transform.position, Vector3.zero);
+        return unitBaseScore + 10 * (int)shotDistance;
+    }
+
+    private void ShowScorePopup(int score)
+    {
+        GameObject scorePopUp = Instantiate(scorePopUpPrefab, transform.position, Quaternion.identity);
+        PopUp popUp = scorePopUp.GetComponent<PopUp>();
+        popUp.Initialize(score.ToString());
+    }
+
+    private void PlayDestroyEffect()
+    {
+        Instantiate(destroyShipPrefab, transform.position, transform.rotation);
+    }
+
 
     // Additional enemy-specific methods...
 }

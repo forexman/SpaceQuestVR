@@ -5,7 +5,22 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip[] audioClips;
 
-    public void PlayAudioClip(int clipIndex, bool loop = false)
+    public static AudioManager Instance { get; private set; }
+
+    void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    public void PlayAudioClip(int clipIndex, bool loop)
     {
         if (clipIndex >= 0 && clipIndex < audioClips.Length)
         {
@@ -17,5 +32,12 @@ public class AudioManager : MonoBehaviour
         {
             Debug.LogWarning("Audio clip index out of range.");
         }
+    }
+
+    public void PlayAudioClip(AudioClip audioclip, bool loop)
+    {
+        audioSource.clip = audioclip;
+        audioSource.loop = loop;
+        audioSource.Play();
     }
 }
