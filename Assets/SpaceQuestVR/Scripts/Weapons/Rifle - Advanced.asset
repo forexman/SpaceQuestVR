@@ -10,12 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fca1a506db6728945b814e50568fa887, type: 3}
-  m_Name: Rifle
+  m_Name: Rifle - Advanced
   m_EditorClassIdentifier: 
   projectilePrefab: {fileID: 4016273362745119833, guid: 5636ed3719a131b4da3b158adcd86fbc,
     type: 3}
-  isAutomatic: 1
-  roundsPerMinute: 300
-  projectileDamage: 35
-  projectileSpeed: 150
-  projectilePoolSize: 20
+  firingMode: 2
+  firingSound: {fileID: 8300000, guid: 04d804bf0bc71d346a8b92ad77410d24, type: 3}
+  emptySound: {fileID: 8300000, guid: a131af80f8787a3478780ddb98dae149, type: 3}
+  roundsPerMinute: 450
+  projectileDamage: 24
+  projectileSpeed: 250
+  projectilePoolSize: 10
+  magazineCapacity: 30
+  reloadTime: 2.5

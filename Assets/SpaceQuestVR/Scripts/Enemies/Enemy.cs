@@ -11,6 +11,7 @@ public class Enemy : MonoBehaviour, IEnemyBehavior, IScoreable, IPoolable
     [SerializeField] private GameObject collisionPrefab;
     [SerializeField] private GameObject destroyShipPrefab;
     [SerializeField] private GameObject scorePopUpPrefab;
+    private AudioClip unitExplosionSFX;
 
     void Awake()
     {
@@ -22,6 +23,7 @@ public class Enemy : MonoBehaviour, IEnemyBehavior, IScoreable, IPoolable
         unitHealth = data.unitHealth;
         unitBaseScore = data.baseScore;
         unitDamageToShield = data.damageToShield;
+        unitExplosionSFX = data.explosionSFX;
         unitSpeed = Random.Range(data.unitSpeedMin, data.unitSpeedMax);
     }
 
@@ -115,9 +117,8 @@ public class Enemy : MonoBehaviour, IEnemyBehavior, IScoreable, IPoolable
 
     private void PlayDestroyEffect()
     {
-        Instantiate(destroyShipPrefab, transform.position, transform.rotation);
+        GameObject explosionGO = Instantiate(destroyShipPrefab, transform.position, transform.rotation);
+        AudioSource exAudioSource = explosionGO.GetComponent<AudioSource>();
+        if(exAudioSource) exAudioSource.PlayOneShot(unitExplosionSFX);
     }
-
-
-    // Additional enemy-specific methods...
 }

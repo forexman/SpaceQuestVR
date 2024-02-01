@@ -10,4 +10,5 @@ public class EnemyShip : ScriptableObject
     public float unitSpeedMax;
     public int baseScore;
     public int damageToShield;
+    public AudioClip explosionSFX;
 }

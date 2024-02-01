@@ -3,12 +3,10 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour, IProjectile
 {
-    private float projectileSpeed;
     private int damage;
     private float lifetime = 1f;
     private float timeSinceLaunch;
     private Rigidbody rb;
-    private Vector3 velocity;
 
     void Awake()
     {
@@ -41,17 +39,23 @@ public class Projectile : MonoBehaviour, IProjectile
     void OnTriggerEnter(Collider other)
     {
         GameObject target = other.gameObject;
-        if (target.GetComponent<Enemy>() != null)
+        IEnemyBehavior enemy = target.GetComponent<IEnemyBehavior>();
+        if (enemy != null)
         {
-            target.GetComponent<Enemy>().TakeDamage(damage, transform.position);
+            enemy.TakeDamage(damage, transform.position);
             PoolManager.Instance.ReturnToPool(gameObject.name, gameObject);
         }
     }
 
     void OnCollisionEnter(Collision collision)
-    {       
-        Vector3 collisionPoint = collision.contacts[0].point; // Get the collision point
-        Enemy enemy = collision.collider.GetComponent<Enemy>();
+    {
+        if (collision.gameObject.tag == "Terrain")
+        {
+            PoolManager.Instance.ReturnToPool(gameObject.name, gameObject);
+            return;
+        }
+        Vector3 collisionPoint = collision.contacts[0].point;
+        IEnemyBehavior enemy = collision.collider.gameObject.GetComponent<IEnemyBehavior>();
         if (enemy != null)
         {
             enemy.TakeDamage(damage, collisionPoint);

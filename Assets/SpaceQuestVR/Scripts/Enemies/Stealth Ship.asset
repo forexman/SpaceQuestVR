@@ -19,3 +19,4 @@ MonoBehaviour:
   unitSpeedMax: 18
   baseScore: 40
   damageToShield: 15
+  explosionSFX: {fileID: 8300000, guid: 78f53d9da56f04c449a276cf3f600f52, type: 3}

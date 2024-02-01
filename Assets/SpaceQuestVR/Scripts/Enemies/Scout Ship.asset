@@ -15,7 +15,8 @@ MonoBehaviour:
   prefab: {fileID: 185370, guid: 85e6ecc70d6e89b4da57366bf9f32dd4, type: 3}
   poolSize: 10
   unitHealth: 50
-  unitSpeedMin: 20
-  unitSpeedMax: 40
+  unitSpeedMin: 18
+  unitSpeedMax: 28
   baseScore: 20
   damageToShield: 5
+  explosionSFX: {fileID: 8300000, guid: 78f53d9da56f04c449a276cf3f600f52, type: 3}

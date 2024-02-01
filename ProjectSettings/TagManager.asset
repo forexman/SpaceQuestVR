@@ -5,9 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - Laser
-  - Asteroid
-  - Earth
   - EnemyShip
+  - Terrain
   layers:
   - Default
   - TransparentFX
