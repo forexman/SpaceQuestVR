@@ -39,7 +39,7 @@ public class Projectile : MonoBehaviour, IProjectile
     void OnTriggerEnter(Collider other)
     {
         GameObject target = other.gameObject;
-        IEnemyBehavior enemy = target.GetComponent<IEnemyBehavior>();
+        IDamageable enemy = target.GetComponent<IDamageable>();
         if (enemy != null)
         {
             enemy.TakeDamage(damage, transform.position);
@@ -55,10 +55,10 @@ public class Projectile : MonoBehaviour, IProjectile
             return;
         }
         Vector3 collisionPoint = collision.contacts[0].point;
-        IEnemyBehavior enemy = collision.collider.gameObject.GetComponent<IEnemyBehavior>();
-        if (enemy != null)
+        IDamageable damageableObj = collision.collider.gameObject.GetComponent<IDamageable>();
+        if (damageableObj != null)
         {
-            enemy.TakeDamage(damage, collisionPoint);
+            damageableObj.TakeDamage(damage, collisionPoint);
             PoolManager.Instance.ReturnToPool(gameObject.name, gameObject);
         }
     }

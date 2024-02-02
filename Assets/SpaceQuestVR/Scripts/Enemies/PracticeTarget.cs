@@ -2,7 +2,7 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 
-public class PracticeTarget : MonoBehaviour, IEnemyBehavior
+public class PracticeTarget : MonoBehaviour, IDamageable
 {
     private float damageThisInterval = 0f;
     private const float updateInterval = 1f;
@@ -37,20 +37,5 @@ public class PracticeTarget : MonoBehaviour, IEnemyBehavior
     private void ResetIntervalDamage()
     {
         damageThisInterval = 0f;
-    }
-
-    public void Move()
-    {
-        return;
-    }
-
-    public void Attack(GameObject target)
-    {
-        return;
-    }
-
-    public void OnPlayerInteraction()
-    {
-        return;
     }
 }

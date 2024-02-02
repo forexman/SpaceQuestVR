@@ -4,12 +4,13 @@ public class EnemyEndZone : MonoBehaviour
 {
     void OnTriggerEnter(Collider otherObject)
     {
-        Enemy enemy = otherObject.GetComponent<Enemy>();
-        if (enemy != null)
+        if (otherObject.CompareTag("EnemyShip"))
         {
-            int damage = enemy.GetDamageToShield();
-            ShieldManager.Instance.ReduceShieldEnergy(damage);
-            PoolManager.Instance.ReturnToPool(enemy.gameObject.name, enemy.gameObject);
+            EnemyAttack attackComponent = otherObject.GetComponent<EnemyAttack>();
+            if (attackComponent != null)
+            {
+                attackComponent.AttackShield();
+            }
         }
     }
 }

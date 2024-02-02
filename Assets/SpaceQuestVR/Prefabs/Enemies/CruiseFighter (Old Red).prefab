@@ -4933,12 +4933,15 @@ GameObject:
   m_Component:
   - component: {fileID: 434884}
   - component: {fileID: -2034550474177759058}
-  - component: {fileID: -6043649637441317022}
   - component: {fileID: 5197607198961301700}
   - component: {fileID: 8339156073410478427}
+  - component: {fileID: -572119327374476972}
+  - component: {fileID: 4760155303952618993}
+  - component: {fileID: 1254434004397514780}
+  - component: {fileID: 193940749700174446}
   m_Layer: 0
   m_Name: CruiseFighter (Old Red)
-  m_TagString: Untagged
+  m_TagString: EnemyShip
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4981,25 +4984,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 6.9796476, y: 1.7912381, z: 9.922276}
   m_Center: {x: 0, y: 0.14624941, z: -0.25047803}
---- !u!114 &-6043649637441317022
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 185370}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b6c77718b581a314dae9f8591de69b4f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  direction: {x: -1, y: 0, z: 0}
-  collisionPrefab: {fileID: 4617569560785638521, guid: 9bf6861c007358244859046af14a3172,
-    type: 3}
-  destroyShipPrefab: {fileID: 4617569560785638521, guid: 70da2f782023dc74a86453dd910d776d,
-    type: 3}
-  scorePopUpPrefab: {fileID: 5833575180740593418, guid: 5aa9057f353a6754b9d8fde4b97e658a,
-    type: 3}
 --- !u!54 &5197607198961301700
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -5049,6 +5033,66 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300002, guid: 7fea2db65062cc645a42de560c2e6d8c, type: 3}
+--- !u!114 &-572119327374476972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 185370}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83effa02ccdc8614e8e3f1a096b328d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unitDamageToShield: 0
+--- !u!114 &4760155303952618993
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 185370}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12ddee9dc55a79f44a14ae63021c0ff6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unitHealth: 0
+  collisionPrefab: {fileID: 4617569560785638521, guid: 9bf6861c007358244859046af14a3172,
+    type: 3}
+  destroyShipPrefab: {fileID: 4617569560785638521, guid: 70da2f782023dc74a86453dd910d776d,
+    type: 3}
+  unitExplosionSFX: {fileID: 8300000, guid: 78f53d9da56f04c449a276cf3f600f52, type: 3}
+--- !u!114 &1254434004397514780
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 185370}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 580801d69e3a0ac43a7704fda914dd72, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unitSpeed: 0
+  direction: {x: 0, y: 0, z: 0}
+--- !u!114 &193940749700174446
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 185370}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f9ea3f8864dcf549889622f6bc7ed59, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unitBaseScore: 0
+  scorePopUpPrefab: {fileID: 5833575180740593418, guid: 5aa9057f353a6754b9d8fde4b97e658a,
+    type: 3}
 --- !u!1 &187356
 GameObject:
   m_ObjectHideFlags: 0
