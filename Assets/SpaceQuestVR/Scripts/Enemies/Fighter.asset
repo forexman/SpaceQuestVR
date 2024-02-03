@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9f8a2e404f6efb40a581c1de769780a, type: 3}
   m_Name: Fighter
   m_EditorClassIdentifier: 
-  prefab: {fileID: 103844, guid: a1c956ac7640ce749b02027f67f2d65c, type: 3}
+  prefab: {fileID: 103844, guid: b13b68b6016ae2641b17f80a5f3c71ab, type: 3}
   poolSize: 10
   unitHealth: 100
   unitSpeedMin: 13

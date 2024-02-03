@@ -39,6 +39,8 @@ public class EnemySpawnZone : MonoBehaviour
         {
             InitializeEnemyComponents(enemy, selectedShip);
             PositionEnemy(enemy);
+            DissolvingController dC = enemy.GetComponent<DissolvingController>();
+            if(dC != null) dC.Appear();
         }
     }
 
