@@ -5,4 +5,4 @@ You are the last defender of Exalis Base, located on the third moon of Xendor. A
 
 Are you up for the task?
 
-[![SpaceQuestVR](https://img.youtube.com/vi/7pSgPzQblTM/0.jpg)](https://www.youtube.com/watch?v=7pSgPzQblTM)
+[![SpaceQuestVR](https://img.youtube.com/vi/7pSgPzQblTM/0.jpg)](https://www.youtube.com/watch?v=7pSgPzQblTM "Click for the Demo Video!")
