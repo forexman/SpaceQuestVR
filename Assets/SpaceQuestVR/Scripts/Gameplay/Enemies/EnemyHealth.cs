@@ -11,8 +11,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     private void Awake()
     {
         // Ensure there's an AudioSource component for playing sounds
-        audioSource = GetComponent<AudioSource>();
-        if (audioSource == null)
+        if (!TryGetComponent<AudioSource>(out audioSource))
         {
             audioSource = gameObject.AddComponent<AudioSource>();
         }
@@ -41,7 +40,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     {
         if (collisionPrefab != null)
         {
-            Instantiate(collisionPrefab, new Vector3 (collisionPoint.x, transform.position.y - 0.85f, collisionPoint.z), Quaternion.identity);
+            Instantiate(collisionPrefab, new Vector3(collisionPoint.x, transform.position.y - 0.85f, collisionPoint.z), Quaternion.identity);
         }
     }
 

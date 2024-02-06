@@ -35,7 +35,7 @@ public class DissolvingController : MonoBehaviour
             float counter = 0f;
             while (materials[0].GetFloat("_DissolveAmount") < 1)
             {
-                counter += dissolveRate;
+                counter = Mathf.Max(counter + dissolveRate, 1);
                 for (int i = 0; i < materials.Length; i++)
                 {
                     materials[i].SetFloat("_DissolveAmount", counter);
@@ -58,7 +58,7 @@ public class DissolvingController : MonoBehaviour
                 {
                     materials[i].SetFloat("_DissolveAmount", counter);
                 }
-                counter -= dissolveRate;
+                counter = Mathf.Max(counter - dissolveRate, 0);
                 yield return new WaitForSeconds(refreshRate);
             }
         }

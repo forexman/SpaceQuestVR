@@ -29,11 +29,6 @@ public class ScoreManager : MonoBehaviour
         scoreText.text = playerScore.ToString();
     }
 
-    public void ResetScore()
-    {
-        SetScore(0);
-    }
-
     public void SetScore(int amount)
     {
         playerScore = amount;

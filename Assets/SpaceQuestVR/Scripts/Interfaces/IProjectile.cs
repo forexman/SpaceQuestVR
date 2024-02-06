@@ -2,5 +2,5 @@ using UnityEngine;
 
 public interface IProjectile
 {
-    void Launch(Vector3 direction, float speed);
+    public void Initialize(Vector3 direction, float speed, int damage);
 }

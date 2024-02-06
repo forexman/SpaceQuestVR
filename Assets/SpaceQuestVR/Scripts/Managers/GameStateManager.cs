@@ -85,7 +85,6 @@ public class GameStateManager : MonoBehaviour
 
     public void StartNewGame()
     {
-        Debug.Log("Start new Game");
         ShieldManager.Instance.Initialize();
         ScoreManager.Instance.SetScore(0);
         LevelManager.Instance.StartNewGame();

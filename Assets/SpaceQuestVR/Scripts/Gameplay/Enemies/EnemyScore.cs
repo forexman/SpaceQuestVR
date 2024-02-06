@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class EnemyScore : MonoBehaviour
+public class EnemyScore : MonoBehaviour, IScoreable
 {
     [SerializeField] private int unitBaseScore;
     [SerializeField] private GameObject scorePopUpPrefab;

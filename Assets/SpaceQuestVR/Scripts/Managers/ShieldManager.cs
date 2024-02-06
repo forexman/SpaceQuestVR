@@ -20,7 +20,8 @@ public class ShieldManager : MonoBehaviour
         }
     }
 
-    public void Initialize(){
+    public void Initialize()
+    {
         currentShieldEnergy = maxShieldEnergy;
         UIManager.Instance.SetShieldLife(currentShieldEnergy / 100f);
     }
@@ -36,6 +37,4 @@ public class ShieldManager : MonoBehaviour
             GameStateManager.Instance.SetGameOverDefeat();
         }
     }
-
-    // Additional methods (e.g., for restoring shield energy)
 }

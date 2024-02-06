@@ -39,6 +39,7 @@ public class PoolManager : MonoBehaviour
         GameObject obj = Instantiate(prefab);
         obj.name = poolKey;
         obj.SetActive(false);
+        obj.transform.SetParent(transform);
         return obj;
     }
 
@@ -61,7 +62,7 @@ public class PoolManager : MonoBehaviour
         }
 
         obj.SetActive(true);
-         activeObjects.Add(obj);
+        activeObjects.Add(obj);
         return obj;
     }
 

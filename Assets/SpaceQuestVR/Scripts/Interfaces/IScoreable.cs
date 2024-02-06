@@ -1,4 +1,4 @@
 public interface IScoreable
 {
-    int CalculateScore();
+    public void CalculateAndReportScore();
 }

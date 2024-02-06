@@ -92,10 +92,8 @@ public class LevelManager : MonoBehaviour
 
     private void SpawnEnemy(LevelData level)
     {
-        EnemyShip selectedShip = currentLevel.enemyShips[Random.Range(0, currentLevel.enemyShips.Length)];
+        EnemyShip selectedShip = level.enemyShips[Random.Range(0, level.enemyShips.Length)];
         EnemySpawnZone.Instance.SpawnEnemy(selectedShip);
-        // Implement logic to spawn an enemy from the level.enemyShips array
-        // Example: Choose a random ship type to spawn
     }
 
     public void ShipDestroyed()
@@ -109,7 +107,8 @@ public class LevelManager : MonoBehaviour
         }
     }
 
-    private void SetEnemyRemaining(float value){
+    private void SetEnemyRemaining(float value)
+    {
         UIManager.Instance.SetEnemyElement(value);
     }
 }
